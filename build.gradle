@@ -1,0 +1,43 @@
+buildscript {
+
+}
+
+
+
+apply plugin: 'java'
+apply plugin: 'war'
+    repositories {
+        mavenLocal()
+		mavenCentral()
+    }
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+task explodedWar(type: Copy) {
+    def generatedFileDir = file("$buildDir/ROOT")
+    inputs.dir file("$buildDir/libs")
+    outputs.dir generatedFileDir
+    into generatedFileDir
+    with war
+}
+explodedWar.dependsOn cleanExplodedWar
+war.dependsOn explodedWar
+
+
+
+description = 'example'
+dependencies {
+	providedCompile group: 'org.apache.myfaces.core', name: 'myfaces-impl', version: '2.2.12'
+	providedCompile(group: 'org.apache.tomee', name: 'tomee-webservices', version: '7.0.3') {
+		exclude(module: 'javaee-api')
+	}
+    providedCompile(group: 'org.apache.tomcat', name: 'tomcat-catalina', version:'8.5.11')
+	providedCompile 'org.apache.tomee:javaee-api:7.0'
+	
+}
+
+
+
+
+
